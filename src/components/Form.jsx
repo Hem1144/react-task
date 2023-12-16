@@ -25,6 +25,12 @@ const FormComponent = () => {
     },
   });
 
+  const [errors, setErrors] = useState({
+    name: "",
+    email: "",
+    phoneNumber: "",
+  });
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -46,13 +52,50 @@ const FormComponent = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
+    const { name, email, phoneNumber } = formData;
+
+    // Validation
+    let errorsObj = { ...errors };
+
+    if (!name.trim()) {
+      errorsObj = { ...errorsObj, name: "Name is required" };
+    } else {
+      errorsObj = { ...errorsObj, name: "" };
+    }
+
+    if (!email.trim()) {
+      errorsObj = { ...errorsObj, email: "Email is required" };
+    } else if (!/^\S+@\S+\.\S+$/.test(email)) {
+      errorsObj = { ...errorsObj, email: "Invalid email format" };
+    } else {
+      errorsObj = { ...errorsObj, email: "" };
+    }
+
+    if (!phoneNumber.trim()) {
+      errorsObj = { ...errorsObj, phoneNumber: "Phone Number is required" };
+    } else if (!/^\d{7,}$/.test(phoneNumber)) {
+      errorsObj = {
+        ...errorsObj,
+        phoneNumber: "Phone number must be at least 7 digits and only numbers",
+      };
+    } else {
+      errorsObj = { ...errorsObj, phoneNumber: "" };
+    }
+
+    setErrors(errorsObj);
+
+    // Submit if no errors
+    if (!errorsObj.name && !errorsObj.email && !errorsObj.phoneNumber) {
+      console.log(formData);
+    }
   };
 
   return (
     <form onSubmit={handleSubmit} className="form-container">
       <div>
-        <label htmlFor="name">Name:</label>
+        <label htmlFor="name">
+          <span className="require">* </span>Name:
+        </label>
         <input
           type="text"
           id="name"
@@ -60,9 +103,12 @@ const FormComponent = () => {
           value={formData.name}
           onChange={handleChange}
         />
+        {errors.name && <span className="error">{errors.name}</span>}
       </div>
       <div>
-        <label htmlFor="email">Email:</label>
+        <label htmlFor="email">
+          <span className="require">* </span>Email:
+        </label>
         <input
           type="email"
           id="email"
@@ -70,9 +116,12 @@ const FormComponent = () => {
           value={formData.email}
           onChange={handleChange}
         />
+        {errors.email && <span className="error">{errors.email}</span>}
       </div>
       <div>
-        <label htmlFor="phoneNumber">Phone Number:</label>
+        <label htmlFor="phoneNumber">
+          <span className="require">* </span>Phone Number:
+        </label>
         <input
           type="tel"
           id="phoneNumber"
@@ -80,7 +129,10 @@ const FormComponent = () => {
           value={formData.phoneNumber}
           onChange={handleChange}
         />
-      </div>
+        {errors.phoneNumber && (
+          <span className="error">{errors.phoneNumber}</span>
+        )}
+      </div>{" "}
       <div>
         <label htmlFor="dob">DOB:</label>
         <input
