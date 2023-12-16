@@ -86,7 +86,7 @@ const FormComponent = () => {
 
     // Submit if no errors
     if (!errorsObj.name && !errorsObj.email && !errorsObj.phoneNumber) {
-      console.log(formData);
+      localStorage.setItem("userData", JSON.stringify(formData));
     }
   };
 

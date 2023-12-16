@@ -1,11 +1,10 @@
-// TableComponent.jsx
 import React from "react";
 import { Link } from "react-router-dom";
 
 const Table = ({ userData, handleDelete, handleSort }) => {
   return (
     <div>
-      <table>
+      {/* <table>
         <thead>
           <tr>
             <th onClick={handleSort}>Name ▼</th>
@@ -28,7 +27,7 @@ const Table = ({ userData, handleDelete, handleSort }) => {
       </table>
       <Link to="/profiles">
         <button>View Profiles</button>
-      </Link>
+      </Link> */}
     </div>
   );
 };
