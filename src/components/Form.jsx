@@ -20,7 +20,7 @@ const Form = ({ addUser }) => {
     address: {
       city: "",
       district: "",
-      province: provinces[0],
+      province: "",
       country: "Nepal",
     },
   });
@@ -191,6 +191,7 @@ const Form = ({ addUser }) => {
           value={formData.address.province}
           onChange={handleAddressChange}
         >
+          <option>Select</option>
           {provinces.map((province, index) => (
             <option key={index} value={province}>
               {province}
