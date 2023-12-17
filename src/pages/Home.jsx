@@ -1,30 +1,41 @@
 import React, { useState, useEffect } from "react";
 import Table from "../components/Table";
+import Form from "../components/Form";
 
 const Home = () => {
   const [userData, setUserData] = useState([]);
 
   useEffect(() => {
     const storedData = JSON.parse(localStorage.getItem("userData"));
-    console.log(storedData);
     if (storedData) {
       setUserData(storedData);
     }
   }, []);
 
-  // const addUser = (newUser) => {
-  //   const updatedData = [...userData, newUser];
-  //   setUserData(updatedData);
-  //   localStorage.setItem("userData", JSON.stringify(updatedData));
-  // };
+  useEffect(() => {
+    localStorage.setItem("userData", JSON.stringify(userData));
+  }, [userData]);
+  const addUser = (newUser) => {
+    setUserData([...userData, newUser]);
+  };
 
-  // const editUser = (index, updatedUser) => {};
+  const editUser = (index, updatedUser) => {};
 
-  // const deleteUser = (index) => {};
+  const deleteUser = (index) => {};
 
-  // const sortUsers = () => {};
+  const sortUsers = () => {};
 
-  return <div>{<Table userData={userData} />}</div>;
+  return (
+    <div>
+      <h2
+        style={{ textAlign: "center", justifyContent: "center", color: "blue" }}
+      >
+        User List Table
+      </h2>
+      <Form addUser={addUser} />
+      {<Table userData={userData} />}
+    </div>
+  );
 };
 
 export default Home;

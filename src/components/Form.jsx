@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import "./Form.css";
+import "../styles/Form.css";
 
 const provinces = [
   "Koshi Province",
-  "Madesh Province",
+  "Madhesh Province",
   "Bagmati Province",
   "Gandaki Province",
   "Lumbini Provience",
@@ -11,7 +11,7 @@ const provinces = [
   "Sudurpashchim Province",
 ];
 
-const FormComponent = () => {
+const Form = ({ addUser }) => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -30,6 +30,8 @@ const FormComponent = () => {
     email: "",
     phoneNumber: "",
   });
+
+  const [data, setData] = useState([]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -54,39 +56,57 @@ const FormComponent = () => {
     e.preventDefault();
     const { name, email, phoneNumber } = formData;
 
-    // Validation
     let errorsObj = { ...errors };
-
-    if (!name.trim()) {
-      errorsObj = { ...errorsObj, name: "Name is required" };
-    } else {
-      errorsObj = { ...errorsObj, name: "" };
-    }
-
-    if (!email.trim()) {
-      errorsObj = { ...errorsObj, email: "Email is required" };
-    } else if (!/^\S+@\S+\.\S+$/.test(email)) {
-      errorsObj = { ...errorsObj, email: "Invalid email format" };
-    } else {
-      errorsObj = { ...errorsObj, email: "" };
-    }
-
-    if (!phoneNumber.trim()) {
-      errorsObj = { ...errorsObj, phoneNumber: "Phone Number is required" };
-    } else if (!/^\d{7,}$/.test(phoneNumber)) {
-      errorsObj = {
-        ...errorsObj,
-        phoneNumber: "Phone number must be at least 7 digits and only numbers",
-      };
-    } else {
-      errorsObj = { ...errorsObj, phoneNumber: "" };
-    }
 
     setErrors(errorsObj);
 
-    // Submit if no errors
     if (!errorsObj.name && !errorsObj.email && !errorsObj.phoneNumber) {
-      localStorage.setItem("userData", JSON.stringify(formData));
+      addUser(formData);
+      localStorage.setItem("userData", JSON.stringify([...data, formData]));
+      setFormData({
+        name: "",
+        email: "",
+        phoneNumber: "",
+        dob: "",
+        address: {
+          city: "",
+          district: "",
+          province: provinces[0],
+          country: "Nepal",
+        },
+      });
+
+      if (!name.trim()) {
+        errorsObj = { ...errorsObj, name: "Name is required" };
+      } else {
+        errorsObj = { ...errorsObj, name: "" };
+      }
+
+      if (!email.trim()) {
+        errorsObj = { ...errorsObj, email: "Email is required" };
+      } else if (!/^\S+@\S+\.\S+$/.test(email)) {
+        errorsObj = { ...errorsObj, email: "Invalid email format" };
+      } else {
+        errorsObj = { ...errorsObj, email: "" };
+      }
+
+      if (!phoneNumber.trim()) {
+        errorsObj = { ...errorsObj, phoneNumber: "Phone Number is required" };
+      } else if (!/^\d{7,}$/.test(phoneNumber)) {
+        errorsObj = {
+          ...errorsObj,
+          phoneNumber:
+            "Phone number must be at least 7 digits and only numbers",
+        };
+      } else {
+        errorsObj = { ...errorsObj, phoneNumber: "" };
+      }
+
+      setErrors(errorsObj);
+      setData([...data, formData]);
+      if (!errorsObj.name && !errorsObj.email && !errorsObj.phoneNumber) {
+        localStorage.setItem("userData", JSON.stringify(data));
+      }
     }
   };
 
@@ -192,5 +212,4 @@ const FormComponent = () => {
     </form>
   );
 };
-
-export default FormComponent;
+export default Form;
