@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import Table from "../components/Table";
 import Form from "../components/Form";
+import { Link } from "react-router-dom";
 
-const Home = () => {
+const Home = ({ deleteUser }) => {
   const [userData, setUserData] = useState([]);
-  console.log("userData", userData);
 
   useEffect(() => {
     const storedData = JSON.parse(localStorage.getItem("userData"));
@@ -15,30 +15,22 @@ const Home = () => {
 
   const addUser = (newUser) => {
     const updatedData = [...userData, newUser];
-
-    setUserData(updatedData);
     localStorage.setItem("userData", JSON.stringify(updatedData));
+    setUserData(updatedData);
   };
 
   const editUser = (index, updatedUser) => {
     const updatedData = [...userData];
     updatedData[index] = updatedUser;
-    setUserData(updatedData);
     localStorage.setItem("userData", JSON.stringify(updatedData));
+    setUserData(updatedData);
   };
 
-  const deleteUser = (index) => {
-    const updatedData = userData.filter((user, i) => i !== index);
-    setUserData(updatedData);
-    localStorage.setItem("userData", JSON.stringify(updatedData));
-  };
-
-  const sortUsers = () => {
-    const sortedData = [...userData].sort((a, b) =>
-      a.name.localeCompare(b.name)
-    );
-    setUserData(sortedData);
-  };
+  // const deleteUser = (id) => {
+  //   const updatedData = userData.filter((user) => user.id !== id);
+  //   localStorage.setItem("userData", JSON.stringify(updatedData));
+  //   setUserData(updatedData);
+  // };
 
   return (
     <div>
@@ -46,10 +38,12 @@ const Home = () => {
       <Form addUser={addUser} />
       <Table
         userData={userData}
-        handleDelete={deleteUser}
+        deleteUser={deleteUser}
         handleEdit={editUser}
-        handleSort={sortUsers}
       />
+      <Link to="/profiles">
+        <button className="view-profiles-button">View Profiles</button>
+      </Link>
     </div>
   );
 };

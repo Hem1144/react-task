@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "../styles/Form.css";
+import { v1 as uuidv1 } from "uuid";
 
 const provinces = [
   "Koshi Province",
@@ -11,16 +12,16 @@ const provinces = [
   "Sudurpashchim Province",
 ];
 
-const Form = ({ addUser }) => {
+const Form = ({ addUser, setSingleData, singleData }) => {
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phoneNumber: "",
-    dob: "",
+    name: singleData?.name || "",
+    email: singleData?.email || "",
+    phoneNumber: singleData?.phoneNumber || "",
+    dob: singleData?.dob || "",
     address: {
-      city: "",
-      district: "",
-      province: "",
+      city: singleData?.address.city || "",
+      district: singleData?.address.district || "",
+      province: singleData?.address.province || "",
       country: "Nepal",
     },
   });
@@ -31,38 +32,37 @@ const Form = ({ addUser }) => {
     phoneNumber: "",
   });
 
-  const [data, setData] = useState([]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-  const handleAddressChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      address: {
-        ...formData.address,
-        [name]: value,
-      },
-    });
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     const { name, email, phoneNumber } = formData;
 
-    let errorsObj = { ...errors };
+    let errorsObj = { name: "", email: "", phoneNumber: "" };
+
+    if (!name.trim()) {
+      errorsObj.name = "Name is required";
+    }
+
+    if (!email.trim()) {
+      errorsObj.email = "Email is required";
+    } else if (!/^\S+@\S+\.\S+$/.test(email)) {
+      errorsObj.email = "Invalid email format";
+    }
+
+    if (!phoneNumber.trim()) {
+      errorsObj.phoneNumber = "Phone Number is required";
+    } else if (!/^\d{7,}$/.test(phoneNumber)) {
+      errorsObj.phoneNumber =
+        "Phone number must be at least 7 digits and only numbers";
+    }
 
     setErrors(errorsObj);
 
-    if (!errorsObj.name && !errorsObj.email && !errorsObj.phoneNumber) {
-      addUser(formData);
-      localStorage.setItem("userData", JSON.stringify([...data, formData]));
+    if (!(errorsObj.name || errorsObj.email || errorsObj.phoneNumber)) {
+      const id = uuidv1();
+      const user = { ...formData, id };
+
+      addUser(user);
+
       setFormData({
         name: "",
         email: "",
@@ -71,42 +71,44 @@ const Form = ({ addUser }) => {
         address: {
           city: "",
           district: "",
-          province: provinces[0],
+          province: "",
           country: "Nepal",
         },
       });
+    }
+  };
 
-      if (!name.trim()) {
-        errorsObj = { ...errorsObj, name: "Name is required" };
-      } else {
-        errorsObj = { ...errorsObj, name: "" };
-      }
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+    if (Object.keys(singleData).length > 0) {
+      setSingleData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+    }
+  };
 
-      if (!email.trim()) {
-        errorsObj = { ...errorsObj, email: "Email is required" };
-      } else if (!/^\S+@\S+\.\S+$/.test(email)) {
-        errorsObj = { ...errorsObj, email: "Invalid email format" };
-      } else {
-        errorsObj = { ...errorsObj, email: "" };
-      }
-
-      if (!phoneNumber.trim()) {
-        errorsObj = { ...errorsObj, phoneNumber: "Phone Number is required" };
-      } else if (!/^\d{7,}$/.test(phoneNumber)) {
-        errorsObj = {
-          ...errorsObj,
-          phoneNumber:
-            "Phone number must be at least 7 digits and only numbers",
-        };
-      } else {
-        errorsObj = { ...errorsObj, phoneNumber: "" };
-      }
-
-      setErrors(errorsObj);
-      setData([...data, formData]);
-      if (!errorsObj.name && !errorsObj.email && !errorsObj.phoneNumber) {
-        localStorage.setItem("userData", JSON.stringify(data));
-      }
+  const handleAddressChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      address: {
+        ...prevData.address,
+        [name]: value,
+      },
+    }));
+    if (Object.keys(singleData).length > 0) {
+      setSingleData((prevData) => ({
+        ...prevData,
+        address: {
+          ...prevData.address,
+          [name]: value,
+        },
+      }));
     }
   };
 
@@ -209,7 +211,7 @@ const Form = ({ addUser }) => {
           disabled
         />
       </div>
-      <button type="submit">Submit</button>
+      {!singleData && <button type="submit">Submit</button>}
     </form>
   );
 };

@@ -1,11 +1,12 @@
-import React, { useState } from "react";
-import { Button, Modal } from "antd";
+import { Modal } from "antd";
 import Form from "./Form";
-const Popup = ({ showModal, setShowModal, singleUser }) => {
-  console.log(showModal, "modal");
-  const handleOk = () => {
-    setShowModal(false);
-  };
+const Popup = ({
+  showModal,
+  setShowModal,
+  singleData,
+  setSingleData,
+  handleOk,
+}) => {
   const handleCancel = () => {
     setShowModal(false);
   };
@@ -17,7 +18,7 @@ const Popup = ({ showModal, setShowModal, singleUser }) => {
         onOk={handleOk}
         onCancel={handleCancel}
       >
-        <Form singleUser={singleUser} />
+        <Form singleData={singleData} setSingleData={setSingleData} />
       </Modal>
     </>
   );
