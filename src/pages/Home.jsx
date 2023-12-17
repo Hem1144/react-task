@@ -4,6 +4,7 @@ import Form from "../components/Form";
 
 const Home = () => {
   const [userData, setUserData] = useState([]);
+  console.log("userData", userData);
 
   useEffect(() => {
     const storedData = JSON.parse(localStorage.getItem("userData"));
@@ -12,28 +13,43 @@ const Home = () => {
     }
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem("userData", JSON.stringify(userData));
-  }, [userData]);
   const addUser = (newUser) => {
-    setUserData([...userData, newUser]);
+    const updatedData = [...userData, newUser];
+
+    setUserData(updatedData);
+    localStorage.setItem("userData", JSON.stringify(updatedData));
   };
 
-  const editUser = (index, updatedUser) => {};
+  const editUser = (index, updatedUser) => {
+    const updatedData = [...userData];
+    updatedData[index] = updatedUser;
+    setUserData(updatedData);
+    localStorage.setItem("userData", JSON.stringify(updatedData));
+  };
 
-  const deleteUser = (index) => {};
+  const deleteUser = (index) => {
+    const updatedData = userData.filter((user, i) => i !== index);
+    setUserData(updatedData);
+    localStorage.setItem("userData", JSON.stringify(updatedData));
+  };
 
-  const sortUsers = () => {};
+  const sortUsers = () => {
+    const sortedData = [...userData].sort((a, b) =>
+      a.name.localeCompare(b.name)
+    );
+    setUserData(sortedData);
+  };
 
   return (
     <div>
-      <h2
-        style={{ textAlign: "center", justifyContent: "center", color: "blue" }}
-      >
-        User List Table
-      </h2>
+      <h2 style={{ textAlign: "center", color: "blue" }}>User List Table</h2>
       <Form addUser={addUser} />
-      {<Table userData={userData} />}
+      <Table
+        userData={userData}
+        handleDelete={deleteUser}
+        handleEdit={editUser}
+        handleSort={sortUsers}
+      />
     </div>
   );
 };

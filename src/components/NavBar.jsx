@@ -16,11 +16,6 @@ const NavBar = () => {
             Profiles
           </Link>
         </li>
-        <li className="nav-item">
-          <Link to="/addUser" className="nav-link">
-            AddUser
-          </Link>
-        </li>
       </ul>
     </nav>
   );

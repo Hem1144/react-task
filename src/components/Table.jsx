@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "../styles/Table.css";
+import Popup from "./Modal";
 
 const Table = ({ userData, handleDelete, handleSort }) => {
+  const [showModal, setShowModal] = useState(false);
+  const [singleData, setSingleData] = useState({});
+
   return (
     <div className="table-container">
       <table className="custom-table">
@@ -19,28 +23,39 @@ const Table = ({ userData, handleDelete, handleSort }) => {
           </tr>
         </thead>
         <tbody>
-          {userData.map((user, index) => (
-            <tr key={index}>
-              <td>{user.name}</td>
-              <td>{user.email}</td>
-              <td>{user.phoneNumber}</td>
-              <td>{user.dob}</td>
-              <td>{user.address.city}</td>
-              <td>
-                <button
-                  onClick={() => handleDelete(index)}
-                  className="delete-button"
-                >
-                  Delete
-                </button>
-                <Link to={`/edit/${index}`}>
-                  <button className="edit-button">Edit</button>
-                </Link>
-              </td>
-            </tr>
-          ))}
+          {userData.length > 0 &&
+            userData.map((user, index) => (
+              <tr key={index}>
+                <td>{user.name}</td>
+                <td>{user.email}</td>
+                <td>{user.phoneNumber}</td>
+                <td>{user.dob}</td>
+                <td>{user.address.city}</td>
+                <td>
+                  <button
+                    onClick={() => handleDelete(index)}
+                    className="delete-button"
+                  >
+                    Delete
+                  </button>
+                  <button
+                    className="edit-button"
+                    onClick={() => {
+                      setShowModal(true), setSingleData(user);
+                    }}
+                  >
+                    Edit
+                  </button>
+                </td>
+              </tr>
+            ))}
         </tbody>
       </table>
+      <Popup
+        showModal={showModal}
+        singleUser={singleData}
+        setShowModal={setShowModal}
+      />
       <br />
       <Link to="/profiles">
         <button className="view-profiles-button">View Profiles</button>
